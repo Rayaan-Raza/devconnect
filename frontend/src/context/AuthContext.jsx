@@ -55,6 +55,7 @@ export const AuthProvider = ({ children }) => {
         name: decoded.name,
         email: decoded.email,
         role: decoded.role,
+        isProfileComplete: decoded.isProfileComplete,
       });
     } catch (e) {
       console.error('Invalid token');

@@ -2,9 +2,15 @@ const jwt = require('jsonwebtoken');
 const { v4: uuidv4 } = require('uuid');
 
 // Generate short-lived access token
-exports.generateAccessToken = (userId, role) => {
+exports.generateAccessToken = (user) => {
   return jwt.sign(
-    { id: userId, role },
+    { 
+      id: user._id, 
+      role: user.role, 
+      name: user.name, 
+      email: user.email, 
+      isProfileComplete: user.isProfileComplete 
+    },
     process.env.JWT_ACCESS_SECRET,
     { expiresIn: process.env.JWT_ACCESS_EXPIRE || '15m' }
   );

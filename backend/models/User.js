@@ -35,6 +35,10 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    isProfileComplete: {
+      type: Boolean,
+      default: false,
+    },
     avatar: {
       type: String,
       default: '',

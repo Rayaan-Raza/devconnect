@@ -35,22 +35,28 @@ exports.register = async (req, res) => {
         // Allow for seeding purposes - just warn
         console.warn(`Student registered with non-edu email: ${email}`);
       }
-      if (!regNumber) {
-        return res.status(400).json({ success: false, message: 'Registration number is required for students' });
-      }
-      if (!department) {
-        return res.status(400).json({ success: false, message: 'Department is required for students' });
-      }
+      // Generate regNumber from email if not provided
+      const generatedRegNumber = regNumber || email.split('@')[0].toUpperCase();
+      const assignedDepartment = department || 'Unassigned';
+
       // Check reg number uniqueness
-      const existing = await StudentProfile.findOne({ regNumber });
+      const existing = await StudentProfile.findOne({ regNumber: generatedRegNumber });
       if (existing) {
         return res.status(400).json({ success: false, message: 'Registration number already exists' });
       }
+
+      req.body.regNumber = generatedRegNumber;
+      req.body.department = assignedDepartment;
     }
 
     if (role === 'company') {
       if (!companyName) return res.status(400).json({ success: false, message: 'Company name is required' });
       if (!industry) return res.status(400).json({ success: false, message: 'Industry is required' });
+      
+      const existingCompany = await CompanyProfile.findOne({ companyName });
+      if (existingCompany) {
+        return res.status(400).json({ success: false, message: 'A company with this name already exists' });
+      }
     }
 
     // Check email uniqueness
@@ -59,15 +65,16 @@ exports.register = async (req, res) => {
       return res.status(400).json({ success: false, message: 'Email already registered' });
     }
 
-    // Create user
-    const user = await User.create({ name, email, password, role });
+    // Create user. For companies, use companyName as the primary name to keep individuals anonymous
+    const finalName = role === 'company' ? companyName : name;
+    const user = await User.create({ name: finalName, email, password, role, isProfileComplete: false });
 
     // Create profile
     if (role === 'student') {
       await StudentProfile.create({
         user: user._id,
-        regNumber,
-        department,
+        regNumber: req.body.regNumber || email.split('@')[0].toUpperCase(),
+        department: req.body.department || 'Unassigned',
       });
     } else if (role === 'company') {
       await CompanyProfile.create({
@@ -81,7 +88,7 @@ exports.register = async (req, res) => {
     sendWelcomeEmail(email, name, role);
 
     // Generate tokens
-    const accessToken = generateAccessToken(user._id, user.role);
+    const accessToken = generateAccessToken(user);
     const { token: refreshToken, expiresAt } = generateRefreshToken(user._id);
     user.refreshTokens.push({ token: refreshToken, expiresAt });
     await user.save({ validateBeforeSave: false });
@@ -98,6 +105,7 @@ exports.register = async (req, res) => {
         email: user.email,
         role: user.role,
         isVerified: user.isVerified,
+        isProfileComplete: user.isProfileComplete,
         avatar: user.avatar,
       },
     });
@@ -138,7 +146,7 @@ exports.login = async (req, res) => {
     // Clean expired tokens
     user.cleanExpiredTokens();
 
-    const accessToken = generateAccessToken(user._id, user.role);
+    const accessToken = generateAccessToken(user);
     const { token: refreshToken, expiresAt } = generateRefreshToken(user._id, rememberMe);
     user.refreshTokens.push({ token: refreshToken, expiresAt });
     user.lastActive = new Date();
@@ -156,6 +164,7 @@ exports.login = async (req, res) => {
         email: user.email,
         role: user.role,
         isVerified: user.isVerified,
+        isProfileComplete: user.isProfileComplete,
         avatar: user.avatar,
       },
     });
@@ -196,7 +205,7 @@ exports.refresh = async (req, res) => {
       return res.status(401).json({ success: false, message: 'Refresh token revoked' });
     }
 
-    const accessToken = generateAccessToken(user._id, user.role);
+    const accessToken = generateAccessToken(user);
     res.status(200).json({ success: true, accessToken });
   } catch (error) {
     console.error('Refresh error:', error);

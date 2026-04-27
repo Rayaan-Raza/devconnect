@@ -16,12 +16,21 @@ const schema = z.object({
     .regex(/[0-9]/, 'Must contain at least one number'),
   confirmPassword: z.string(),
   role: z.enum(['student', 'company']),
+  companyName: z.string().optional(),
+  industry: z.string().optional(),
 }).refine((data) => data.password === data.confirmPassword, {
   message: "Passwords don't match",
   path: ["confirmPassword"],
 }).refine((data) => {
+  if (data.role === 'company' && !data.companyName) return false;
+  return true;
+}, { message: "Company name is required", path: ["companyName"] })
+  .refine((data) => {
+  if (data.role === 'company' && !data.industry) return false;
+  return true;
+}, { message: "Industry is required", path: ["industry"] })
+  .refine((data) => {
   if (data.role === 'student') {
-    // Basic check for university email - can be refined
     return data.email.includes('.edu');
   }
   return true;
@@ -95,7 +104,7 @@ const Register = () => {
         <form className="mt-8 space-y-5" onSubmit={handleSubmit(onSubmit)}>
           <div className="grid grid-cols-1 gap-5">
             <div>
-              <label className="label">{selectedRole === 'student' ? 'Full Name' : 'Company Name'}</label>
+              <label className="label">Full Name</label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
                   <User size={18} />
@@ -104,11 +113,36 @@ const Register = () => {
                   {...register('name')}
                   type="text"
                   className={`input pl-10 ${errors.name ? 'border-red-500' : ''}`}
-                  placeholder={selectedRole === 'student' ? 'e.g. Ahmed Ali' : 'e.g. TechSoft Solutions'}
+                  placeholder="e.g. Ahmed Ali"
                 />
               </div>
               {errors.name && <p className="mt-1 text-xs text-red-500">{errors.name.message}</p>}
             </div>
+
+            {selectedRole === 'company' && (
+              <>
+                <div>
+                  <label className="label">Company Name</label>
+                  <input
+                    {...register('companyName')}
+                    type="text"
+                    className={`input ${errors.companyName ? 'border-red-500' : ''}`}
+                    placeholder="e.g. TechSoft Solutions"
+                  />
+                  {errors.companyName && <p className="mt-1 text-xs text-red-500">{errors.companyName.message}</p>}
+                </div>
+                <div>
+                  <label className="label">Industry</label>
+                  <input
+                    {...register('industry')}
+                    type="text"
+                    className={`input ${errors.industry ? 'border-red-500' : ''}`}
+                    placeholder="e.g. Software Development"
+                  />
+                  {errors.industry && <p className="mt-1 text-xs text-red-500">{errors.industry.message}</p>}
+                </div>
+              </>
+            )}
 
             <div>
               <label className="label">Email Address</label>

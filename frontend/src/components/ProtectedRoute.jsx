@@ -22,6 +22,11 @@ const ProtectedRoute = ({ children, roles }) => {
     return <Navigate to="/" replace />;
   }
 
+  // Enforce profile completion
+  if (user && !user.isProfileComplete && location.pathname !== '/profile') {
+    return <Navigate to="/profile" state={{ alert: 'Please complete your profile to access all features.' }} replace />;
+  }
+
   return children;
 };
 
