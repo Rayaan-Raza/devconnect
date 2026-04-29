@@ -12,26 +12,23 @@ const studentProfileSchema = new mongoose.Schema(
       type: String,
       required: [true, 'Registration number is required'],
       unique: true,
-      match: [
-        /^\d{4}-[A-Z]{2}-\d{3}$/,
-        'Registration number must be in format: 2021-CS-001',
-      ],
     },
     department: {
       type: String,
       required: [true, 'Department is required'],
-      enum: [
-        'Computer Science',
-        'Software Engineering',
-        'Electrical Engineering',
-        'Mechanical Engineering',
-        'Civil Engineering',
-        'Business Administration',
-        'Mathematics',
-        'Physics',
-        'Chemistry',
-        'Other',
-      ],
+      default: 'Unassigned'
+    },
+    university: {
+      type: String,
+      default: ''
+    },
+    campusCity: {
+      type: String,
+      default: ''
+    },
+    fatherName: {
+      type: String,
+      default: ''
     },
     bio: {
       type: String,
@@ -39,6 +36,12 @@ const studentProfileSchema = new mongoose.Schema(
       default: '',
     },
     skills: [
+      {
+        type: String,
+        trim: true,
+      },
+    ],
+    keywords: [
       {
         type: String,
         trim: true,

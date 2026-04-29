@@ -37,21 +37,30 @@ exports.getMyProfile = async (req, res) => {
 // @access  Private (student)
 exports.updateMyProfile = async (req, res) => {
   try {
-    const { bio, skills, linkedin, github, portfolio, graduationYear, cgpa } = req.body;
+    const { bio, skills, keywords, linkedin, github, portfolio, graduationYear, cgpa, university, campusCity, department, fatherName } = req.body;
 
     const profile = await StudentProfile.findOne({ user: req.user._id });
     if (!profile) return res.status(404).json({ success: false, message: 'Profile not found' });
 
     if (bio !== undefined) profile.bio = bio;
     if (skills !== undefined) profile.skills = Array.isArray(skills) ? skills : skills.split(',').map(s => s.trim());
+    if (keywords !== undefined) profile.keywords = Array.isArray(keywords) ? keywords : keywords.split(',').map(s => s.trim());
     if (linkedin !== undefined) profile.linkedin = linkedin;
     if (github !== undefined) profile.github = github;
     if (portfolio !== undefined) profile.portfolio = portfolio;
     if (graduationYear !== undefined) profile.graduationYear = graduationYear;
     if (cgpa !== undefined) profile.cgpa = cgpa;
+    if (university !== undefined) profile.university = university;
+    if (campusCity !== undefined) profile.campusCity = campusCity;
+    if (department !== undefined) profile.department = department;
+    if (fatherName !== undefined) profile.fatherName = fatherName;
 
     await profile.save();
-    res.status(200).json({ success: true, message: 'Profile updated', profile });
+
+    // Mark user profile as complete
+    await User.findByIdAndUpdate(req.user._id, { isProfileComplete: true });
+
+    res.status(200).json({ success: true, message: 'Profile updated', profile, isProfileComplete: true });
   } catch (error) {
     console.error('Update student profile error:', error);
     res.status(500).json({ success: false, message: 'Server error' });
@@ -135,17 +144,35 @@ exports.getAllStudents = async (req, res) => {
       const skillArr = skills.split(',').map(s => s.trim());
       filter.skills = { $in: skillArr };
     }
+    if (search) {
+      const regex = new RegExp(search, 'i');
+      filter.$or = [
+        { skills: { $regex: regex } },
+        { keywords: { $regex: regex } },
+        { bio: { $regex: regex } },
+        { department: { $regex: regex } },
+      ];
+    }
 
-    let profileQuery = StudentProfile.find(filter)
+    let profiles = await StudentProfile.find(filter)
       .populate('user', 'name email avatar createdAt isActive')
       .skip(skip)
       .limit(Number(limit))
       .sort({ createdAt: -1 });
 
-    const [profiles, total] = await Promise.all([
-      profileQuery,
-      StudentProfile.countDocuments(filter),
-    ]);
+    // Also filter by user name if search is provided
+    if (search) {
+      const regex = new RegExp(search, 'i');
+      profiles = profiles.filter(p => 
+        p.user && (
+          regex.test(p.user.name) ||
+          p.skills?.some(s => regex.test(s)) ||
+          p.keywords?.some(k => regex.test(k))
+        )
+      );
+    }
+
+    const total = await StudentProfile.countDocuments(filter);
 
     res.status(200).json({
       success: true,

@@ -12,12 +12,15 @@ exports.createProject = async (req, res) => {
       title, tagline, abstract, problemStatement, solution,
       techStack, category, department, supervisor, teamMembers,
       githubRepo, liveDemoUrl, demoVideoUrl, documentationUrl,
+      demoHtmlUrl, tags, collaboratorEmails,
       achievements, awards, academicYear,
     } = req.body;
 
     const techStackArr = Array.isArray(techStack) ? techStack : (techStack || '').split(',').map(s => s.trim()).filter(Boolean);
     const achievementsArr = Array.isArray(achievements) ? achievements : (achievements || '').split(',').map(s => s.trim()).filter(Boolean);
     const awardsArr = Array.isArray(awards) ? awards : (awards || '').split(',').map(s => s.trim()).filter(Boolean);
+    const tagsArr = Array.isArray(tags) ? tags : (tags || '').split(',').map(s => s.trim()).filter(Boolean);
+    const emailsArr = Array.isArray(collaboratorEmails) ? collaboratorEmails : (collaboratorEmails || '').split(',').map(s => s.trim()).filter(Boolean);
 
     let parsedTeam = teamMembers;
     if (typeof teamMembers === 'string') {
@@ -31,11 +34,13 @@ exports.createProject = async (req, res) => {
     const project = await Project.create({
       title, tagline, abstract, problemStatement, solution,
       techStack: techStackArr,
+      tags: tagsArr,
+      collaboratorEmails: emailsArr,
       category, department,
       supervisor: parsedSupervisor || {},
       teamMembers: parsedTeam || [],
       owner: req.user._id,
-      githubRepo, liveDemoUrl, demoVideoUrl, documentationUrl,
+      githubRepo, liveDemoUrl, demoVideoUrl, documentationUrl, demoHtmlUrl,
       achievements: achievementsArr,
       awards: awardsArr,
       academicYear,
@@ -77,7 +82,10 @@ exports.getProjects = async (req, res) => {
       filter.techStack = { $in: arr };
     }
     if (search) {
-      filter.$text = { $search: search };
+      filter.$or = [
+        { $text: { $search: search } },
+        { tags: { $regex: search, $options: 'i' } }
+      ];
     }
 
     const [projects, total] = await Promise.all([
@@ -149,13 +157,23 @@ exports.updateProject = async (req, res) => {
 
     const fields = ['title', 'tagline', 'abstract', 'problemStatement', 'solution',
       'category', 'department', 'githubRepo', 'liveDemoUrl', 'demoVideoUrl',
-      'documentationUrl', 'academicYear'];
+      'documentationUrl', 'academicYear', 'demoHtmlUrl'];
     fields.forEach(f => { if (req.body[f] !== undefined) project[f] = req.body[f]; });
 
     if (req.body.techStack) {
       project.techStack = Array.isArray(req.body.techStack)
         ? req.body.techStack
         : req.body.techStack.split(',').map(s => s.trim());
+    }
+    if (req.body.tags) {
+      project.tags = Array.isArray(req.body.tags)
+        ? req.body.tags
+        : req.body.tags.split(',').map(s => s.trim());
+    }
+    if (req.body.collaboratorEmails) {
+      project.collaboratorEmails = Array.isArray(req.body.collaboratorEmails)
+        ? req.body.collaboratorEmails
+        : req.body.collaboratorEmails.split(',').map(s => s.trim());
     }
     if (req.body.teamMembers) {
       project.teamMembers = typeof req.body.teamMembers === 'string'

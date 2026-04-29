@@ -59,6 +59,7 @@ const projectSchema = new mongoose.Schema(
         linkedin: { type: String, default: '' },
       },
     ],
+    collaboratorEmails: [{ type: String, trim: true }],
     owner: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
@@ -79,7 +80,9 @@ const projectSchema = new mongoose.Schema(
     demoVideoUrl: { type: String, default: '' },
     githubRepo: { type: String, default: '' },
     liveDemoUrl: { type: String, default: '' },
+    demoHtmlUrl: { type: String, default: '' },
     documentationUrl: { type: String, default: '' },
+    tags: [{ type: String, trim: true }],
     // Achievements & Awards
     achievements: [{ type: String }],
     awards: [{ type: String }],
@@ -111,6 +114,7 @@ projectSchema.index({
   abstract: 'text',
   techStack: 'text',
   category: 'text',
+  tags: 'text',
 });
 
 module.exports = mongoose.model('Project', projectSchema);
