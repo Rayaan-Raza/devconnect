@@ -72,7 +72,9 @@ exports.getJobs = async (req, res) => {
 // @access  Public
 exports.getJob = async (req, res) => {
   try {
-    const job = await Job.findById(req.params.id).populate('company', 'name email avatar');
+    const job = await Job.findById(req.params.id)
+      .populate('company', 'name email avatar')
+      .populate('applicants.student', 'name email avatar');
     if (!job) return res.status(404).json({ success: false, message: 'Job not found' });
 
     // Increment views

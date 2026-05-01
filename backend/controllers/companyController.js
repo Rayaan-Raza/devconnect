@@ -38,7 +38,7 @@ exports.getMyProfile = async (req, res) => {
 // @access  Private (company)
 exports.updateCompanyProfile = async (req, res) => {
   try {
-    const { description, website, location, size, contactEmail, phone, linkedin } = req.body;
+    const { description, website, location, size, contactEmail, phone, linkedin, industry } = req.body;
     const profile = await CompanyProfile.findOne({ user: req.user._id });
     if (!profile) return res.status(404).json({ success: false, message: 'Profile not found' });
 
@@ -49,9 +49,13 @@ exports.updateCompanyProfile = async (req, res) => {
     if (contactEmail !== undefined) profile.contactEmail = contactEmail;
     if (phone !== undefined) profile.phone = phone;
     if (linkedin !== undefined) profile.linkedin = linkedin;
+    if (industry !== undefined) profile.industry = industry;
 
     await profile.save();
-    res.status(200).json({ success: true, message: 'Profile updated', profile });
+
+    await User.findByIdAndUpdate(req.user._id, { isProfileComplete: true });
+
+    res.status(200).json({ success: true, message: 'Profile updated', profile, isProfileComplete: true });
   } catch (error) {
     console.error('Update company profile error:', error);
     res.status(500).json({ success: false, message: 'Server error' });
