@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { Search, Filter, Rocket, Eye, Heart, Calendar, GraduationCap } from 'lucide-react';
+import { Search, Filter, Rocket, Eye, Heart, Calendar, GraduationCap, User } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 
