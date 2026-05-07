@@ -11,16 +11,20 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import BrowseProjects from './pages/BrowseProjects';
+import Jobs from './pages/Jobs';
+import Companies from './pages/Companies';
+import Profile from './pages/Profile';
+import ProjectDetail from './pages/ProjectDetail';
+import AdminUsers from './pages/AdminUsers';
+import Students from './pages/Students';
+import SubmitProject from './pages/SubmitProject';
+import AdminPending from './pages/AdminPending';
+import Messages from './pages/Messages';
+import PostJob from './pages/PostJob';
+import JobDetail from './pages/JobDetail';
+import CompanyDetail from './pages/CompanyDetail';
 
 // Placeholder Pages (To be implemented if time permits or as stubs)
-const ProjectDetail = () => <div className="p-20 text-center">Project Detail Page (Coming Soon)</div>;
-const Jobs = () => <div className="p-20 text-center">Job Portal (Coming Soon)</div>;
-const Companies = () => <div className="p-20 text-center">Companies Directory (Coming Soon)</div>;
-const Messages = () => <div className="p-20 text-center">Messaging System (Coming Soon)</div>;
-const Profile = () => <div className="p-20 text-center">User Profile (Coming Soon)</div>;
-const AdminUsers = () => <div className="p-20 text-center">Admin: User Management (Coming Soon)</div>;
-const AdminPending = () => <div className="p-20 text-center">Admin: Pending Projects (Coming Soon)</div>;
-
 const queryClient = new QueryClient();
 
 function App() {
@@ -43,6 +47,11 @@ function App() {
                   <Dashboard />
                 </ProtectedRoute>
               } />
+              <Route path="projects/new" element={
+                <ProtectedRoute roles={['student']}>
+                  <SubmitProject />
+                </ProtectedRoute>
+              } />
               
               <Route path="my-projects" element={
                 <ProtectedRoute roles={['student']}>
@@ -56,7 +65,27 @@ function App() {
                 </ProtectedRoute>
               } />
 
+              <Route path="jobs/new" element={
+                <ProtectedRoute roles={['company']}>
+                  <PostJob />
+                </ProtectedRoute>
+              } />
+
+              <Route path="jobs/:id" element={
+                <ProtectedRoute>
+                  <JobDetail />
+                </ProtectedRoute>
+              } />
+
               <Route path="companies" element={<Companies />} />
+              <Route path="companies/:id" element={<CompanyDetail />} />
+              
+              <Route path="students" element={
+                <ProtectedRoute roles={['company', 'admin']}>
+                  <Students />
+                </ProtectedRoute>
+              } />
+
               <Route path="messages" element={
                 <ProtectedRoute>
                   <Messages />

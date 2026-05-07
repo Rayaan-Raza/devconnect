@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Farm Automation System - Demo</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #f0fdf4; color: #1e293b; }
+    .header { background: linear-gradient(135deg, #166534, #15803d); color: white; padding: 48px 24px; text-align: center; }
+    .header h1 { font-size: 2.5rem; margin-bottom: 8px; }
+    .header p { font-size: 1.1rem; opacity: .85; max-width: 600px; margin: 0 auto; }
+    .container { max-width: 1000px; margin: 0 auto; padding: 32px 16px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; margin-bottom: 40px; }
+    .card { background: white; border-radius: 16px; padding: 24px; box-shadow: 0 2px 12px rgba(0,0,0,.06); border: 1px solid #e2e8f0; }
+    .card h3 { color: #166534; margin-bottom: 12px; font-size: 1.1rem; }
+    .card p { font-size: .9rem; color: #475569; line-height: 1.6; }
+    .sensor { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #f1f5f9; }
+    .sensor:last-child { border-bottom: none; }
+    .sensor-name { font-weight: 600; }
+    .sensor-value { font-size: 1.4rem; font-weight: 700; color: #16a34a; }
+    .badge { display: inline-block; padding: 4px 12px; border-radius: 9999px; font-size: .75rem; font-weight: 600; margin: 2px; }
+    .badge-green { background: #dcfce7; color: #166534; }
+    .badge-blue { background: #dbeafe; color: #1e40af; }
+    .badge-yellow { background: #fef9c3; color: #854d0e; }
+    .progress-bar { height: 8px; background: #e2e8f0; border-radius: 99px; overflow: hidden; margin-top: 8px; }
+    .progress-fill { height: 100%; border-radius: 99px; }
+    .section-title { font-size: 1.5rem; font-weight: 700; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 2px solid #16a34a; }
+    table { width: 100%; border-collapse: collapse; margin-top: 16px; }
+    th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid #e2e8f0; font-size: .9rem; }
+    th { background: #f8fafc; font-weight: 600; color: #334155; }
+    .status-on { color: #16a34a; font-weight: 700; }
+    .status-off { color: #dc2626; font-weight: 700; }
+    footer { text-align: center; padding: 32px; color: #94a3b8; font-size: .85rem; }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <h1>🌱 Smart Farm Automation System</h1>
+    <p>Real-time IoT dashboard for precision agriculture — monitoring soil, weather, and irrigation from anywhere.</p>
+  </div>
+
+  <div class="container">
+
+    <h2 class="section-title">Live Sensor Readings</h2>
+    <div class="grid">
+      <div class="card">
+        <h3>🌡️ Temperature</h3>
+        <div class="sensor"><span class="sensor-name">Field A</span><span class="sensor-value">32°C</span></div>
+        <div class="sensor"><span class="sensor-name">Field B</span><span class="sensor-value">29°C</span></div>
+        <div class="sensor"><span class="sensor-name">Greenhouse</span><span class="sensor-value">35°C</span></div>
+      </div>
+      <div class="card">
+        <h3>💧 Soil Moisture</h3>
+        <div class="sensor"><span class="sensor-name">Field A</span><span class="sensor-value">62%</span></div>
+        <div class="progress-bar"><div class="progress-fill" style="width:62%;background:#16a34a"></div></div>
+        <div class="sensor" style="margin-top:12px"><span class="sensor-name">Field B</span><span class="sensor-value">38%</span></div>
+        <div class="progress-bar"><div class="progress-fill" style="width:38%;background:#eab308"></div></div>
+      </div>
+      <div class="card">
+        <h3>☁️ Weather Forecast</h3>
+        <p style="font-size:2rem;text-align:center;margin:16px 0">⛅</p>
+        <p style="text-align:center;font-weight:600">Partly Cloudy, 34°C</p>
+        <p style="text-align:center;font-size:.85rem;color:#64748b;margin-top:4px">Humidity: 55% · Wind: 12 km/h</p>
+      </div>
+    </div>
+
+    <h2 class="section-title">Irrigation Control Panel</h2>
+    <div class="card" style="margin-bottom:40px">
+      <table>
+        <thead><tr><th>Zone</th><th>Pump</th><th>Schedule</th><th>Last Watered</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td>Field A - North</td><td>Pump #1</td><td>Every 6 hrs</td><td>2 hrs ago</td><td class="status-on">● Active</td></tr>
+          <tr><td>Field A - South</td><td>Pump #2</td><td>Every 8 hrs</td><td>5 hrs ago</td><td class="status-off">● Idle</td></tr>
+          <tr><td>Field B</td><td>Pump #3</td><td>Auto (moisture)</td><td>1 hr ago</td><td class="status-on">● Active</td></tr>
+          <tr><td>Greenhouse</td><td>Drip #1</td><td>Every 4 hrs</td><td>30 min ago</td><td class="status-on">● Active</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2 class="section-title">Tech Stack</h2>
+    <div style="margin-bottom:40px">
+      <span class="badge badge-green">Node.js</span>
+      <span class="badge badge-blue">React</span>
+      <span class="badge badge-yellow">Arduino</span>
+      <span class="badge badge-green">MongoDB</span>
+      <span class="badge badge-blue">MQTT</span>
+      <span class="badge badge-yellow">Soil Sensors</span>
+    </div>
+
+    <h2 class="section-title">Team</h2>
+    <div class="grid">
+      <div class="card"><h3>👤 Student 1</h3><p>Team Lead · Full-stack & IoT integration</p></div>
+      <div class="card"><h3>👤 Student 2</h3><p>Hardware Engineer · Arduino & sensor wiring</p></div>
+    </div>
+  </div>
+
+  <footer>Smart Farm Automation System &mdash; Final Year Project Demo &mdash; UET Lahore 2025-2026</footer>
+</body>
+</html>

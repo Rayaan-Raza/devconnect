@@ -46,6 +46,10 @@ app.use(
   })
 );
 
+// Serve static files (demo HTML pages, etc.)
+const path = require('path');
+app.use('/public', express.static(path.join(__dirname, 'public')));
+
 // Route files
 const auth = require('./routes/auth');
 const projects = require('./routes/projects');

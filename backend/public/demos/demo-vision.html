@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Vision Accessibility Tool - Demo</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #eff6ff; color: #1e293b; }
+    .header { background: linear-gradient(135deg, #1e40af, #3b82f6); color: white; padding: 48px 24px; text-align: center; }
+    .header h1 { font-size: 2.5rem; margin-bottom: 8px; }
+    .header p { font-size: 1.1rem; opacity: .85; max-width: 650px; margin: 0 auto; }
+    .container { max-width: 1000px; margin: 0 auto; padding: 32px 16px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; margin-bottom: 40px; }
+    .card { background: white; border-radius: 16px; padding: 24px; box-shadow: 0 2px 12px rgba(0,0,0,.06); border: 1px solid #e2e8f0; }
+    .card h3 { color: #1e40af; margin-bottom: 12px; }
+    .card p { font-size: .9rem; color: #475569; line-height: 1.6; }
+    .badge { display: inline-block; padding: 4px 12px; border-radius: 9999px; font-size: .75rem; font-weight: 600; margin: 2px; }
+    .badge-blue { background: #dbeafe; color: #1e40af; }
+    .badge-purple { background: #ede9fe; color: #6d28d9; }
+    .badge-teal { background: #ccfbf1; color: #0f766e; }
+    .section-title { font-size: 1.5rem; font-weight: 700; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 2px solid #3b82f6; }
+    .demo-box { background: white; border-radius: 16px; padding: 32px; border: 2px dashed #cbd5e1; text-align: center; margin-bottom: 40px; }
+    .demo-box .big-icon { font-size: 4rem; margin-bottom: 16px; }
+    .feature-list { list-style: none; padding: 0; }
+    .feature-list li { padding: 12px 0; border-bottom: 1px solid #f1f5f9; display: flex; align-items: flex-start; gap: 12px; }
+    .feature-list li:last-child { border-bottom: none; }
+    .feature-icon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0; }
+    .pipeline { display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap; margin: 24px 0; }
+    .pipeline-step { background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px; min-width: 140px; text-align: center; }
+    .pipeline-step .step-num { font-size: .7rem; text-transform: uppercase; letter-spacing: 1px; color: #94a3b8; }
+    .pipeline-step .step-name { font-weight: 700; margin-top: 4px; }
+    .pipeline-arrow { font-size: 1.5rem; color: #3b82f6; }
+    .results-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .result-item { background: #f8fafc; border-radius: 12px; padding: 16px; }
+    .result-item h4 { font-size: .85rem; color: #64748b; margin-bottom: 4px; }
+    .result-item .value { font-size: 1.8rem; font-weight: 800; color: #1e40af; }
+    footer { text-align: center; padding: 32px; color: #94a3b8; font-size: .85rem; }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <h1>👁️ AI Vision Accessibility Tool</h1>
+    <p>A Chrome extension that uses computer vision to describe images, read text aloud, and simplify web layouts for visually impaired users.</p>
+  </div>
+
+  <div class="container">
+
+    <h2 class="section-title">How It Works</h2>
+    <div class="pipeline">
+      <div class="pipeline-step"><div class="step-num">Step 1</div><div class="step-name">🖼️ Capture</div><p style="font-size:.8rem;color:#64748b;margin-top:4px">Screen region selected</p></div>
+      <span class="pipeline-arrow">→</span>
+      <div class="pipeline-step"><div class="step-num">Step 2</div><div class="step-name">🧠 Analyze</div><p style="font-size:.8rem;color:#64748b;margin-top:4px">TensorFlow model inference</p></div>
+      <span class="pipeline-arrow">→</span>
+      <div class="pipeline-step"><div class="step-num">Step 3</div><div class="step-name">🔊 Narrate</div><p style="font-size:.8rem;color:#64748b;margin-top:4px">Text-to-Speech output</p></div>
+    </div>
+
+    <h2 class="section-title">Key Features</h2>
+    <div class="card" style="margin-bottom:40px">
+      <ul class="feature-list">
+        <li><div class="feature-icon" style="background:#dbeafe">🖼️</div><div><strong>Image Description</strong><br>Generates natural-language descriptions for any image on a web page using a fine-tuned BLIP model.</div></li>
+        <li><div class="feature-icon" style="background:#ede9fe">📖</div><div><strong>OCR Text Extraction</strong><br>Extracts and reads embedded text from images, banners, and infographics using Tesseract.js.</div></li>
+        <li><div class="feature-icon" style="background:#ccfbf1">🗂️</div><div><strong>Layout Simplification</strong><br>Strips complex CSS and reformats pages into a clean, high-contrast, screen-reader-friendly layout.</div></li>
+        <li><div class="feature-icon" style="background:#fef9c3">🔊</div><div><strong>Voice Navigation</strong><br>Users can navigate page elements using voice commands: "Next heading", "Read paragraph", etc.</div></li>
+      </ul>
+    </div>
+
+    <h2 class="section-title">Model Performance</h2>
+    <div class="results-grid" style="margin-bottom:40px">
+      <div class="result-item"><h4>Image Captioning Accuracy</h4><div class="value">91.3%</div></div>
+      <div class="result-item"><h4>OCR Character Accuracy</h4><div class="value">96.7%</div></div>
+      <div class="result-item"><h4>Avg. Inference Time</h4><div class="value">320ms</div></div>
+      <div class="result-item"><h4>User Satisfaction (Survey)</h4><div class="value">4.6/5</div></div>
+    </div>
+
+    <h2 class="section-title">Tech Stack</h2>
+    <div style="margin-bottom: 40px">
+      <span class="badge badge-blue">Python</span>
+      <span class="badge badge-purple">TensorFlow</span>
+      <span class="badge badge-blue">JavaScript</span>
+      <span class="badge badge-teal">Chrome Extension API</span>
+      <span class="badge badge-purple">Tesseract.js</span>
+      <span class="badge badge-teal">Web Speech API</span>
+    </div>
+
+    <h2 class="section-title">Team</h2>
+    <div class="grid">
+      <div class="card"><h3>👤 Student 3</h3><p>Solo Developer · Model training, extension development & UI</p></div>
+    </div>
+  </div>
+
+  <footer>AI Vision Accessibility Tool &mdash; Final Year Project Demo &mdash; UET Lahore 2025-2026</footer>
+</body>
+</html>

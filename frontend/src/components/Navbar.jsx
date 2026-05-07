@@ -73,10 +73,17 @@ const Navbar = () => {
             
             {user ? (
               <div className="flex items-center gap-4 ml-4 pl-4 border-l border-slate-200">
-                <div className="text-right hidden lg:block">
+                <div className="text-right hidden lg:block mr-2">
                   <p className="text-xs font-semibold text-slate-900">{user.name}</p>
                   <p className="text-[10px] text-slate-500 capitalize">{user.role}</p>
                 </div>
+                <button
+                  onClick={() => navigate('/profile')}
+                  className="p-2 text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-full transition-all"
+                  title="Profile"
+                >
+                  <User size={20} />
+                </button>
                 <button
                   onClick={handleLogout}
                   className="p-2 text-slate-500 hover:text-red-600 hover:bg-red-50 rounded-full transition-all"
