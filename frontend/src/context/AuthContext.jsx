@@ -26,7 +26,7 @@ api.interceptors.response.use(
     if (error.response && error.response.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
       try {
-        const res = await axios.get(`${API_BASE}/auth/refresh-token`, {
+        const res = await axios.post(`${API_BASE}/auth/refresh`, {}, {
           withCredentials: true,
         });
         const { accessToken } = res.data;
@@ -65,7 +65,7 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const initAuth = async () => {
       try {
-        const res = await axios.get(`${API_BASE}/auth/refresh-token`, {
+        const res = await axios.post(`${API_BASE}/auth/refresh`, {}, {
           withCredentials: true,
         });
         const { accessToken } = res.data;
