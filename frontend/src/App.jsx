@@ -4,6 +4,7 @@ import { AuthProvider } from './context/AuthContext';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import Layout from './components/Layout';
 import ProtectedRoute from './components/ProtectedRoute';
+import { Toaster } from 'react-hot-toast';
 
 // Pages
 import Home from './pages/Home';
@@ -23,6 +24,7 @@ import Messages from './pages/Messages';
 import PostJob from './pages/PostJob';
 import JobDetail from './pages/JobDetail';
 import CompanyDetail from './pages/CompanyDetail';
+import AdminVerifyCompanies from './pages/AdminVerifyCompanies';
 
 // Placeholder Pages (To be implemented if time permits or as stubs)
 const queryClient = new QueryClient();
@@ -31,6 +33,7 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
+        <Toaster position="top-center" reverseOrder={false} />
         <Router>
           <Routes>
             <Route path="/" element={<Layout />}>
@@ -107,6 +110,11 @@ function App() {
               <Route path="admin/pending-projects" element={
                 <ProtectedRoute roles={['admin']}>
                   <AdminPending />
+                </ProtectedRoute>
+              } />
+              <Route path="admin/verify-companies" element={
+                <ProtectedRoute roles={['admin']}>
+                  <AdminVerifyCompanies />
                 </ProtectedRoute>
               } />
 

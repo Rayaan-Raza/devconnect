@@ -27,7 +27,13 @@ const AdminPending = () => {
 
   const handleStatusUpdate = async (projectId, status) => {
     try {
-      await api.put(`/projects/${projectId}/status`, { status });
+      if (status === 'rejected') {
+        const reason = window.prompt('Enter rejection reason:');
+        if (reason === null) return; // User cancelled
+        await api.put(`/projects/${projectId}/reject`, { reason });
+      } else {
+        await api.put(`/projects/${projectId}/approve`);
+      }
       toast.success(`Project ${status} successfully`);
       fetchPendingProjects();
     } catch (err) {
