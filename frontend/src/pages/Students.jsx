@@ -108,7 +108,7 @@ const Students = () => {
                 <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
                   CGPA: {student.cgpa || 'N/A'}
                 </span>
-                <Link to={`/messages?to=${student.user?._id}`} className="text-sm font-medium text-indigo-600 hover:text-indigo-800 flex items-center gap-1">
+                <Link to={`/messages?userId=${student.user?._id}`} className="text-sm font-medium text-indigo-600 hover:text-indigo-800 flex items-center gap-1">
                   <Mail size={16} /> Contact
                 </Link>
               </div>

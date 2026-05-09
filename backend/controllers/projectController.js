@@ -64,13 +64,20 @@ exports.getProjects = async (req, res) => {
 
     const filter = {};
 
-    // Guests & students see approved; admin can see all
+    // Access control based on roles
     if (req.user && req.user.role === 'admin') {
       if (status) filter.status = status;
     } else if (req.user && req.user.role === 'student') {
-      // Students see approved + their own
-      filter.$or = [{ status: 'approved' }, { owner: req.user._id }];
+      // Students see ONLY their own projects (owner or collaborator)
+      filter.$or = [
+        { owner: req.user._id },
+        { collaboratorEmails: req.user.email }
+      ];
+    } else if (req.user && req.user.role === 'company') {
+      // Companies see all approved projects
+      filter.status = 'approved';
     } else {
+      // Guests see approved
       filter.status = 'approved';
     }
 

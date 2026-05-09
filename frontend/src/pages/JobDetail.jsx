@@ -91,16 +91,19 @@ const JobDetail = () => {
 
             {/* Student: Apply button */}
             {user && user.role === 'student' && (
-              <div className="pt-6 border-t border-slate-100">
+              <div className="pt-6 border-t border-slate-100 flex flex-wrap items-center gap-4">
                 {applied ? (
                   <div className="flex items-center gap-2 text-emerald-600 font-semibold text-lg">
-                    <CheckCircle size={24} /> You've already applied to this job
+                    <CheckCircle size={24} /> You've already applied
                   </div>
                 ) : (
                   <button onClick={handleApply} disabled={applying} className="btn-primary px-10 py-3 text-lg">
                     {applying ? 'Submitting...' : 'Apply Now'}
                   </button>
                 )}
+                <Link to={`/messages?userId=${job.company?._id || job.company}`} className="btn-outline px-6 py-3 flex items-center gap-2">
+                  <MessageSquare size={18} /> Message Recruiter
+                </Link>
               </div>
             )}
 

@@ -80,7 +80,7 @@ const CompanyDetail = () => {
             </div>
 
             {user && (
-              <Link to="/messages" className="inline-flex items-center gap-2 btn-primary px-6 py-3">
+              <Link to={`/messages?userId=${company.user?._id || id}`} className="inline-flex items-center gap-2 btn-primary px-6 py-3 shadow-lg shadow-indigo-200">
                 <MessageSquare size={18} /> Send Message
               </Link>
             )}

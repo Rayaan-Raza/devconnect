@@ -16,7 +16,15 @@ const Messages = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const messagesEndRef = useRef(null);
 
-  useEffect(() => { fetchConversations(); }, [api]);
+  useEffect(() => { 
+    fetchConversations();
+    // Check for userId in URL to start a direct chat
+    const params = new URLSearchParams(window.location.search);
+    const directUserId = params.get('userId');
+    if (directUserId) {
+      setActiveChat(directUserId);
+    }
+  }, [api]);
 
   useEffect(() => {
     if (activeChat) fetchMessages(activeChat);
@@ -67,7 +75,11 @@ const Messages = () => {
 
   const getActiveName = () => {
     const conv = conversations.find(c => c.otherUser?._id === activeChat);
-    return conv?.otherUser?.name || 'Chat';
+    if (conv) return conv.otherUser.name;
+    
+    // If not in conversations, check the users list (from startNewChat)
+    const newUser = users.find(u => u.user?._id === activeChat);
+    return newUser?.companyName || newUser?.user?.name || 'New Chat';
   };
 
   return (
@@ -89,30 +101,49 @@ const Messages = () => {
             </div>
           </div>
           <div className="overflow-y-auto flex-grow">
-            {conversations.length === 0 && !loading ? (
+            {conversations.length === 0 && !loading && !activeChat ? (
               <div className="p-8 text-center text-slate-400">
                 <MessageSquare className="mx-auto mb-2" size={32} />
                 <p className="text-sm">No conversations yet</p>
                 <button onClick={startNewChat} className="text-indigo-600 text-sm mt-2 hover:underline">Start one</button>
               </div>
-            ) : conversations.map(conv => (
-              <div
-                key={conv._id}
-                onClick={() => setActiveChat(conv.otherUser?._id)}
-                className={`p-4 border-b border-slate-100 cursor-pointer hover:bg-slate-100 transition-colors flex gap-3 ${activeChat === conv.otherUser?._id ? 'bg-indigo-50 border-l-4 border-l-indigo-600' : ''}`}
-              >
-                <div className="w-12 h-12 rounded-full bg-indigo-100 flex items-center justify-center flex-shrink-0 text-indigo-600">
-                  <User size={20} />
-                </div>
-                <div className="flex-grow min-w-0">
-                  <div className="flex justify-between items-baseline mb-1">
-                    <h3 className="font-semibold text-slate-900 truncate">{conv.otherUser?.name}</h3>
-                    <span className="text-xs text-slate-500 flex-shrink-0">{conv.otherUser?.role}</span>
+            ) : (
+              <>
+                {/* Temporary entry for new direct chat if not in list */}
+                {activeChat && !conversations.find(c => c.otherUser?._id === activeChat) && (
+                  <div className="p-4 border-b border-indigo-100 bg-indigo-50 border-l-4 border-l-indigo-600 flex gap-3">
+                    <div className="w-12 h-12 rounded-full bg-indigo-100 flex items-center justify-center flex-shrink-0 text-indigo-600">
+                      <User size={20} />
+                    </div>
+                    <div className="flex-grow min-w-0">
+                      <div className="flex justify-between items-baseline mb-1">
+                        <h3 className="font-semibold text-slate-900 truncate">{getActiveName()}</h3>
+                        <span className="text-[10px] bg-indigo-200 px-1.5 rounded text-indigo-700 uppercase">New</span>
+                      </div>
+                      <p className="text-sm italic text-slate-400">Starting new chat...</p>
+                    </div>
                   </div>
-                  <p className="text-sm truncate text-slate-500">{conv.lastMessage?.content}</p>
-                </div>
-              </div>
-            ))}
+                )}
+                {conversations.map(conv => (
+                  <div
+                    key={conv._id}
+                    onClick={() => setActiveChat(conv.otherUser?._id)}
+                    className={`p-4 border-b border-slate-100 cursor-pointer hover:bg-slate-100 transition-colors flex gap-3 ${activeChat === conv.otherUser?._id ? 'bg-indigo-50 border-l-4 border-l-indigo-600' : ''}`}
+                  >
+                    <div className="w-12 h-12 rounded-full bg-indigo-100 flex items-center justify-center flex-shrink-0 text-indigo-600">
+                      <User size={20} />
+                    </div>
+                    <div className="flex-grow min-w-0">
+                      <div className="flex justify-between items-baseline mb-1">
+                        <h3 className="font-semibold text-slate-900 truncate">{conv.otherUser?.name}</h3>
+                        <span className="text-xs text-slate-500 flex-shrink-0">{conv.otherUser?.role}</span>
+                      </div>
+                      <p className="text-sm truncate text-slate-500">{conv.lastMessage?.content}</p>
+                    </div>
+                  </div>
+                ))}
+              </>
+            )}
           </div>
         </div>
 

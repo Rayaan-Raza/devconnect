@@ -22,23 +22,22 @@ const Navbar = () => {
     student: [
       { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
       { name: 'My Projects', href: '/my-projects', icon: Rocket },
-      { name: 'Browse Companies', href: '/companies', icon: Briefcase },
+      { name: 'Companies', href: '/companies', icon: Briefcase },
       { name: 'Jobs', href: '/jobs', icon: Briefcase },
       { name: 'Messages', href: '/messages', icon: MessageSquare },
     ],
     company: [
       { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
       { name: 'Post Job', href: '/jobs/new', icon: PlusCircle },
-      { name: 'Browse Students', href: '/students', icon: User },
+      { name: 'Students', href: '/students', icon: User },
       { name: 'Browse Projects', href: '/projects', icon: Rocket },
       { name: 'Messages', href: '/messages', icon: MessageSquare },
     ],
     admin: [
       { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
       { name: 'Users', href: '/admin/users', icon: User },
-      { name: 'Pending Projects', href: '/admin/pending-projects', icon: Rocket },
+      { name: 'Review Projects', href: '/admin/pending-projects', icon: Rocket },
       { name: 'Verify Companies', href: '/admin/verify-companies', icon: ShieldCheck },
-      { name: 'Reports', href: '/admin/reports', icon: LayoutDashboard },
     ],
   };
 
@@ -50,22 +49,22 @@ const Navbar = () => {
         <div className="flex justify-between h-16">
           <div className="flex items-center">
             <Link to="/" className="flex-shrink-0 flex items-center gap-2">
-              <div className="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-indigo-200">
+              <div className="w-9 h-9 bg-indigo-600 rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-indigo-200">
                 D
               </div>
-              <span className="font-bold text-xl tracking-tight text-slate-900 hidden sm:block">
+              <span className="font-bold text-lg tracking-tight text-slate-900 hidden lg:block">
                 Dev<span className="text-indigo-600">Connect</span>
               </span>
             </Link>
           </div>
 
           {/* Desktop Nav */}
-          <div className="hidden md:flex items-center space-x-4">
+          <div className="hidden md:flex items-center space-x-2 lg:space-x-4">
             {currentLinks.map((link) => (
               <Link
                 key={link.name}
                 to={link.href}
-                className="text-slate-600 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
+                className="text-slate-600 hover:text-indigo-600 px-2 lg:px-3 py-2 rounded-md text-sm font-medium transition-colors"
               >
                 {link.name}
               </Link>

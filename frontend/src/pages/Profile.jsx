@@ -13,9 +13,6 @@ const Profile = () => {
   const [formData, setFormData] = useState({});
 
   useEffect(() => {
-    if (location.state?.alert) {
-      toast(location.state.alert, { icon: '⚠️' });
-    }
     fetchProfile();
   }, [user, api, location]);
 
