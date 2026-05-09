@@ -24,205 +24,236 @@ const seedData = async () => {
     console.log('Cleared existing data...');
 
     // 1. Create Admin
-    const admin = await User.create({
+    await User.create({
       name: 'DevConnect Admin',
       email: 'admin@devconnect.com',
-      password: 'Admin123!',
+      password: await bcrypt.hash('Admin123!', 12),
       role: 'admin',
-      isVerified: true
+      isVerified: true,
+      isProfileComplete: true
     });
 
-    // 2. Create Students
-    const studentData = [
-      { name: 'Ahmed Ali', email: '2021-cs-101@student.uet.edu.pk', password: 'Password123!', role: 'student', isVerified: true },
-      { name: 'Sara Khan', email: '2021-cs-102@student.uet.edu.pk', password: 'Password123!', role: 'student', isVerified: true },
-      { name: 'Zainab Fatima', email: '2021-cs-103@student.uet.edu.pk', password: 'Password123!', role: 'student', isVerified: true },
-      { name: 'Hamza Sheikh', email: '2021-cs-104@student.uet.edu.pk', password: 'Password123!', role: 'student', isVerified: true },
-      { name: 'Bilal Ahmed', email: '2021-cs-105@student.uet.edu.pk', password: 'Password123!', role: 'student', isVerified: true },
+    // 2. Create 10 Students
+    const studentNames = [
+      'Ahmed Hassan', 'Sara Khan', 'Bilal Raza', 'Fatima Ali', 'Usman Tariq',
+      'Ayesha Noor', 'Hamza Sheikh', 'Zainab Malik', 'Omar Farooq', 'Hira Javed'
+    ];
+    const studentSkills = [
+      ['JavaScript', 'React', 'Node.js', 'MongoDB', 'Express'],
+      ['Python', 'Machine Learning', 'TensorFlow', 'NLP', 'Data Science'],
+      ['Arduino', 'IoT', 'C++', 'Embedded Systems', 'MQTT'],
+      ['Java', 'Spring Boot', 'Docker', 'Kubernetes', 'AWS'],
+      ['Flutter', 'Dart', 'Firebase', 'React Native', 'Mobile Dev'],
+      ['Solidity', 'Web3.js', 'Blockchain', 'Smart Contracts', 'Ethereum'],
+      ['Python', 'Computer Vision', 'OpenCV', 'PyTorch', 'Deep Learning'],
+      ['React', 'TypeScript', 'GraphQL', 'PostgreSQL', 'Prisma'],
+      ['Cybersecurity', 'Penetration Testing', 'Linux', 'Network Security', 'Wireshark'],
+      ['Unity', 'C#', 'Game Design', 'AR/VR', 'Blender']
+    ];
+    const studentKeywords = [
+      ['fullstack', 'web', 'mern', 'api', 'developer'],
+      ['ai', 'ml', 'data', 'research', 'analytics'],
+      ['iot', 'hardware', 'automation', 'embedded', 'sensors'],
+      ['backend', 'cloud', 'devops', 'microservices', 'enterprise'],
+      ['mobile', 'cross-platform', 'ui', 'app', 'frontend'],
+      ['blockchain', 'crypto', 'defi', 'web3', 'fintech'],
+      ['cv', 'image-processing', 'neural-networks', 'ai', 'research'],
+      ['frontend', 'design-systems', 'graphql', 'typescript', 'saas'],
+      ['security', 'ethical-hacking', 'networking', 'infosec', 'compliance'],
+      ['gamedev', 'metaverse', 'xr', '3d', 'simulation']
+    ];
+    const departments = [
+      'Computer Science', 'Computer Science', 'Computer Engineering', 'Software Engineering', 'Computer Science',
+      'Software Engineering', 'Computer Science', 'Software Engineering', 'Computer Engineering', 'Computer Science'
     ];
 
+    const studentData = [];
+    for (let i = 0; i < 10; i++) {
+      studentData.push({
+        name: studentNames[i],
+        email: `student${i+1}@uet.edu.pk`,
+        password: await bcrypt.hash('Password123!', 12),
+        role: 'student',
+        isVerified: true,
+        isProfileComplete: true
+      });
+    }
     const students = await User.insertMany(studentData);
     
     // Create Student Profiles
-    for (const s of students) {
+    for (let i = 0; i < students.length; i++) {
       await StudentProfile.create({
-        user: s._id,
-        regNumber: s.email.split('@')[0].toUpperCase(),
-        department: 'Computer Science',
-        skills: ['JavaScript', 'React', 'Node.js', 'MongoDB'],
-        bio: `Final year CS student at UET. Passionate about building impactful software solutions.`,
-        githubUrl: 'https://github.com',
-        linkedinUrl: 'https://linkedin.com'
+        user: students[i]._id,
+        regNumber: `2021-CS-${100 + i}`,
+        department: departments[i],
+        university: 'UET Lahore',
+        campusCity: i < 5 ? 'Lahore' : 'Taxila',
+        fatherName: `Muhammad ${['Aslam', 'Iqbal', 'Naveed', 'Tariq', 'Aziz', 'Rashid', 'Saleem', 'Waseem', 'Khalid', 'Akram'][i]}`,
+        skills: studentSkills[i],
+        keywords: studentKeywords[i],
+        bio: `Final year ${departments[i]} student at UET. Specializing in ${studentSkills[i].slice(0, 2).join(' & ')}. Looking for opportunities in the tech industry.`,
+        github: `https://github.com/${studentNames[i].toLowerCase().replace(' ', '')}`,
+        linkedin: `https://linkedin.com/in/${studentNames[i].toLowerCase().replace(' ', '-')}`
       });
     }
 
-    // 3. Create Companies
-    const companyData = [
-      { name: 'TechSoft Solutions', email: 'hr@techsoft.com', password: 'Password123!', role: 'company', isVerified: true },
-      { name: 'Innovate AI', email: 'jobs@innovate.ai', password: 'Password123!', role: 'company', isVerified: true },
-      { name: 'WebScale Corp', email: 'talent@webscale.com', password: 'Password123!', role: 'company', isVerified: false },
+    // 3. Create 10 Companies
+    const companyNames = [
+      'NexGen Solutions', 'CloudSync Technologies', 'DataPulse AI', 'FinEdge Systems', 'MedTech Innovations',
+      'EduSpark Labs', 'CyberShield Corp', 'GreenWave Energy', 'PixelForge Studios', 'AgriSmart Tech'
     ];
-
+    const companyIndustries = [
+      'Software Engineering', 'Cloud Computing', 'Artificial Intelligence', 'FinTech', 'HealthTech',
+      'EdTech', 'Cybersecurity', 'CleanTech', 'Game Development', 'AgriTech'
+    ];
+    const companyData = [];
+    for (let i = 0; i < 10; i++) {
+      companyData.push({
+        name: companyNames[i],
+        email: `hr@${companyNames[i].toLowerCase().replace(/\s+/g, '')}.com`,
+        password: await bcrypt.hash('Password123!', 12),
+        role: 'company',
+        isVerified: true,
+        isProfileComplete: true
+      });
+    }
     const companies = await User.insertMany(companyData);
 
     // Create Company Profiles
-    for (const c of companies) {
+    for (let i = 0; i < companies.length; i++) {
       await CompanyProfile.create({
-        user: c._id,
-        companyName: c.name,
-        website: 'https://example.com',
-        location: 'Lahore, Pakistan',
-        description: 'Leading software development house specializing in modern web and AI solutions.',
-        industry: 'Software Engineering',
-        logoUrl: 'https://via.placeholder.com/150'
+        user: companies[i]._id,
+        companyName: companyNames[i],
+        contactEmail: companies[i].email,
+        website: `https://${companyNames[i].toLowerCase().replace(/\s+/g, '')}.com`,
+        location: i % 2 === 0 ? 'Lahore, Pakistan' : 'Islamabad, Pakistan',
+        description: `${companyNames[i]} is a leading company in the ${companyIndustries[i]} space. We build cutting-edge products and hire top talent from Pakistani universities.`,
+        industry: companyIndustries[i],
+        size: ['1-50', '51-200', '201-500', '501-1000'][i % 4],
+        isVerified: i < 5,
       });
     }
 
-    // 4. Create 10 FYPs
+    // 4. Create 3 Detailed FYPs (Prebuilt public github repos and html demo)
     const projects = [
       {
-        title: 'CropDoc - AI plant disease detection',
-        tagline: 'Empowering farmers with AI-driven diagnostics',
-        abstract: 'An AI-powered mobile application that helps farmers identify crop diseases by simply taking a photo. Uses a deep learning model trained on over 50,000 images of various crops.',
-        problemStatement: 'Farmers lose up to 40% of their yields to undiagnosed pests and diseases, often due to lack of access to agricultural experts.',
-        solution: 'A lightweight mobile app that works offline to provide instant diagnostics and treatment recommendations.',
-        techStack: ['Python', 'TensorFlow', 'React Native', 'Node.js'],
-        category: 'Artificial Intelligence',
+        title: 'Smart Farm Automation System',
+        tagline: 'IoT-based precision agriculture',
+        abstract: 'A complete IoT solution utilizing sensors and an automated irrigation system to optimize water usage and crop yield. The project integrates a React frontend dashboard and a Node.js API to control the hardware components remotely.',
+        problemStatement: 'Farmers lack real-time data to make informed decisions about irrigation, leading to water waste and suboptimal crop health.',
+        solution: 'Our system deploys soil moisture sensors and weather APIs to automatically trigger irrigation only when necessary.',
+        techStack: ['Node.js', 'React', 'Arduino', 'MongoDB'],
+        tags: ['automation', 'iot', 'agriculture', 'hardware'],
+        category: 'IoT',
         department: 'Computer Science',
         owner: students[0]._id,
         status: 'approved',
         isFeatured: true,
         academicYear: '2025-2026',
-        teamMembers: [{ name: 'Ahmed Ali', regNumber: '2021-CS-101', role: 'Team Lead' }]
+        teamMembers: [
+          { name: students[0].name, regNumber: 'STUDENT1', role: 'Team Lead', email: students[0].email },
+          { name: students[1].name, regNumber: 'STUDENT2', role: 'Hardware Engineer', email: students[1].email }
+        ],
+        collaboratorEmails: [students[1].email],
+        githubRepo: 'https://github.com/microsoft/IoT-For-Beginners',
+        demoVideoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+        posterUrl: 'https://via.placeholder.com/800x600',
+        demoHtmlUrl: 'http://localhost:5000/public/demos/demo-farm.html'
       },
       {
-        title: 'MediTrack - Blockchain for medicine supply chain',
-        tagline: 'Securing the path from factory to pharmacy',
-        abstract: 'A decentralized application built on Ethereum to track the provenance of medicines and prevent counterfeit drugs from entering the supply chain.',
-        techStack: ['Solidity', 'Ethereum', 'Web3.js', 'React'],
+        title: 'AI Vision Accessibility Tool',
+        tagline: 'Helping visually impaired navigate the web',
+        abstract: 'A browser extension powered by computer vision models that describes images, reads text aloud, and simplifies complex web layouts for visually impaired users in real-time.',
+        techStack: ['Python', 'TensorFlow', 'JavaScript', 'Chrome Extension API'],
+        tags: ['computer vision', 'accessibility', 'ai', 'deep learning'],
+        category: 'Artificial Intelligence',
+        department: 'Computer Science',
+        owner: students[2]._id,
+        status: 'approved',
+        isFeatured: true,
+        academicYear: '2025-2026',
+        teamMembers: [
+          { name: students[2].name, regNumber: 'STUDENT3', email: students[2].email }
+        ],
+        githubRepo: 'https://github.com/tensorflow/models',
+        demoVideoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+        demoHtmlUrl: 'http://localhost:5000/public/demos/demo-vision.html'
+      },
+      {
+        title: 'Decentralized Academic Credentials',
+        tagline: 'Verifiable university degrees on the blockchain',
+        abstract: 'A smart contract system built on Ethereum to issue, store, and instantly verify academic transcripts and degrees, eliminating credential fraud.',
+        techStack: ['Solidity', 'React', 'Web3.js', 'IPFS'],
+        tags: ['blockchain', 'security', 'web3', 'smart contracts'],
         category: 'Blockchain',
         department: 'Software Engineering',
-        owner: students[1]._id,
+        owner: students[3]._id,
         status: 'approved',
         isFeatured: false,
         academicYear: '2025-2026',
-        teamMembers: [{ name: 'Sara Khan', regNumber: '2021-CS-102' }]
-      },
-      {
-        title: 'EduBridge - Sign language translator',
-        tagline: 'Breaking barriers with real-time gesture translation',
-        abstract: 'A system that uses computer vision to translate sign language gestures into spoken and written language in real-time, facilitating communication for the hearing impaired.',
-        techStack: ['Python', 'OpenCV', 'MediaPipe', 'Flask'],
-        category: 'Artificial Intelligence',
-        department: 'Computer Engineering',
-        owner: students[2]._id,
-        status: 'approved',
-        isFeatured: true,
-        academicYear: '2025-2026'
-      },
-      {
-        title: 'TrafficFlow - Smart traffic management with YOLO',
-        tagline: 'Reducing congestion using real-time object detection',
-        abstract: 'An intelligent traffic signal control system that adjusts signal timings based on the actual vehicle density detected by cameras using the YOLO algorithm.',
-        techStack: ['Python', 'YOLOv8', 'PyQt', 'C++'],
-        category: 'IoT',
-        department: 'Computer Science',
-        owner: students[3]._id,
-        status: 'approved'
-      },
-      {
-        title: 'PawSpace - Pet adoption platform',
-        tagline: 'Connecting pets with their forever homes',
-        abstract: 'A comprehensive web platform for pet shelters to showcase animals available for adoption and for potential owners to find their perfect companions.',
-        techStack: ['MERN Stack', 'Redux', 'Cloudinary'],
-        category: 'Web Development',
-        department: 'Computer Science',
-        owner: students[4]._id,
-        status: 'pending'
-      },
-      {
-        title: 'StockSage - Financial news sentiment analysis',
-        tagline: 'Predicting market trends from news headlines',
-        abstract: 'A tool that scrapes financial news and performs sentiment analysis using BERT to predict short-term stock price movements.',
-        techStack: ['Python', 'NLP', 'BERT', 'Scrapy', 'FastAPI'],
-        category: 'Data Science',
-        department: 'Computer Science',
-        owner: students[0]._id,
-        status: 'approved'
-      },
-      {
-        title: 'MediHome - IoT patient monitoring',
-        tagline: 'Remote healthcare for elderly and chronic patients',
-        abstract: 'A wearable device and cloud platform that monitors vital signs and alerts doctors or family members in case of emergencies.',
-        techStack: ['Arduino', 'Raspberry Pi', 'Firebase', 'Flutter'],
-        category: 'IoT',
-        department: 'Computer Engineering',
-        owner: students[1]._id,
-        status: 'approved'
-      },
-      {
-        title: 'FraudShield - Credit card fraud detection',
-        tagline: 'Protecting transactions with machine learning',
-        abstract: 'A real-time fraud detection system that uses anomaly detection algorithms to identify suspicious credit card transactions.',
-        techStack: ['Python', 'Scikit-Learn', 'Docker', 'Kafka'],
-        category: 'Artificial Intelligence',
-        department: 'Computer Science',
-        owner: students[2]._id,
-        status: 'approved'
-      },
-      {
-        title: 'CVForge - AI resume parser',
-        tagline: 'Transforming resumes into structured data',
-        abstract: 'An AI tool for recruiters that extracts skills, experience, and education from resumes in various formats and matches them with job descriptions.',
-        techStack: ['Python', 'Spacy', 'Django', 'PostgreSQL'],
-        category: 'Artificial Intelligence',
-        department: 'Software Engineering',
-        owner: students[3]._id,
-        status: 'rejected',
-        rejectionReason: 'The abstract is too short and lacks technical details.'
-      },
-      {
-        title: 'CodeCollab - Real-time code editor',
-        tagline: 'Coding together, wherever you are',
-        abstract: 'A web-based IDE that allows multiple developers to code in the same environment simultaneously with real-time updates and integrated video chat.',
-        techStack: ['Node.js', 'Socket.io', 'Monaco Editor', 'WebRTC'],
-        category: 'Web Development',
-        department: 'Computer Science',
-        owner: students[4]._id,
-        status: 'approved'
+        teamMembers: [
+          { name: students[3].name, regNumber: 'STUDENT4', email: students[3].email }
+        ],
+        githubRepo: 'https://github.com/ethereum/solidity',
+        demoHtmlUrl: 'http://localhost:5000/public/demos/demo-blockchain.html'
       }
     ];
 
     await Project.insertMany(projects);
 
-    // 5. Create some Jobs
-    const jobs = [
-      {
-        title: 'Junior Web Developer',
-        company: companies[0]._id,
-        description: 'Looking for a passionate React developer to join our frontend team.',
-        requirements: ['React', 'CSS', 'JavaScript'],
-        location: 'Lahore',
-        salaryRange: '60k - 80k',
-        type: 'Full-time'
-      },
-      {
-        title: 'AI Research Intern',
-        company: companies[1]._id,
-        description: 'Join us in building next-gen NLP models.',
-        requirements: ['Python', 'PyTorch', 'Linear Algebra'],
-        location: 'Remote',
-        salaryRange: '30k - 40k',
-        type: 'Internship'
-      }
+    // 5. Create 25 Diverse Jobs
+    const jobTemplates = [
+      { title: 'Frontend Developer', desc: 'Build responsive UIs with React and modern CSS.', reqs: ['React', 'JavaScript', 'CSS', 'Git'] },
+      { title: 'Backend Engineer', desc: 'Design scalable APIs and microservices.', reqs: ['Node.js', 'PostgreSQL', 'Docker', 'REST APIs'] },
+      { title: 'Data Scientist', desc: 'Analyze datasets and build predictive ML models.', reqs: ['Python', 'Pandas', 'Scikit-learn', 'SQL'] },
+      { title: 'DevOps Engineer', desc: 'Manage CI/CD pipelines and cloud infrastructure.', reqs: ['AWS', 'Docker', 'Kubernetes', 'Terraform'] },
+      { title: 'Mobile App Developer', desc: 'Build cross-platform mobile apps.', reqs: ['Flutter', 'React Native', 'Firebase', 'REST APIs'] },
+      { title: 'Machine Learning Engineer', desc: 'Train and deploy production ML models.', reqs: ['Python', 'TensorFlow', 'PyTorch', 'MLOps'] },
+      { title: 'UI/UX Designer', desc: 'Design intuitive and beautiful user interfaces.', reqs: ['Figma', 'User Research', 'Prototyping', 'Design Systems'] },
+      { title: 'Blockchain Developer', desc: 'Write smart contracts and dApps.', reqs: ['Solidity', 'Web3.js', 'Hardhat', 'Ethereum'] },
+      { title: 'Cybersecurity Analyst', desc: 'Protect systems from threats and vulnerabilities.', reqs: ['Penetration Testing', 'SIEM', 'Network Security', 'Linux'] },
+      { title: 'Game Developer', desc: 'Build immersive gaming experiences.', reqs: ['Unity', 'C#', 'Game Physics', '3D Modeling'] },
+      { title: 'Cloud Architect', desc: 'Design and implement cloud solutions.', reqs: ['AWS', 'Azure', 'GCP', 'Microservices'] },
+      { title: 'QA Engineer', desc: 'Ensure software quality through automated testing.', reqs: ['Selenium', 'Jest', 'CI/CD', 'Test Planning'] },
+      { title: 'Product Manager', desc: 'Drive product strategy and roadmap.', reqs: ['Agile', 'Jira', 'Data Analysis', 'Communication'] },
+      { title: 'Full Stack Developer', desc: 'End-to-end web application development.', reqs: ['React', 'Node.js', 'MongoDB', 'TypeScript'] },
+      { title: 'AI Research Intern', desc: 'Assist in cutting-edge AI research projects.', reqs: ['Python', 'Deep Learning', 'Research Papers', 'Math'] },
+      { title: 'Database Administrator', desc: 'Manage and optimize databases.', reqs: ['PostgreSQL', 'MongoDB', 'Redis', 'Query Optimization'] },
+      { title: 'Embedded Systems Engineer', desc: 'Program microcontrollers and firmware.', reqs: ['C', 'C++', 'Arduino', 'RTOS'] },
+      { title: 'Technical Writer', desc: 'Write clear documentation and API guides.', reqs: ['Technical Writing', 'Markdown', 'API Documentation', 'Git'] },
+      { title: 'Systems Analyst', desc: 'Analyze business requirements and design solutions.', reqs: ['UML', 'SQL', 'Business Analysis', 'Agile'] },
+      { title: 'NLP Engineer', desc: 'Build natural language processing pipelines.', reqs: ['Python', 'Hugging Face', 'spaCy', 'Transformers'] },
+      { title: 'AR/VR Developer', desc: 'Develop augmented and virtual reality applications.', reqs: ['Unity', 'ARKit', 'WebXR', '3D Math'] },
+      { title: 'FinTech Developer', desc: 'Build secure financial technology applications.', reqs: ['Node.js', 'Payment APIs', 'Security', 'Compliance'] },
+      { title: 'Network Engineer', desc: 'Design and maintain network infrastructure.', reqs: ['Cisco', 'TCP/IP', 'Firewalls', 'VPN'] },
+      { title: 'Site Reliability Engineer', desc: 'Keep production systems running smoothly.', reqs: ['Linux', 'Monitoring', 'Automation', 'Incident Response'] },
+      { title: 'Computer Vision Engineer', desc: 'Build image and video analysis systems.', reqs: ['OpenCV', 'Python', 'CNN', 'YOLO'] },
     ];
 
-    await Job.insertMany(jobs);
+    const jobList = [];
+    for (let i = 0; i < jobTemplates.length; i++) {
+      const company = companies[i % 10];
+      const t = jobTemplates[i];
+      jobList.push({
+        company: company._id,
+        title: t.title,
+        type: i % 4 === 0 ? 'internship' : i % 3 === 0 ? 'part-time' : 'full-time',
+        location: i % 3 === 0 ? 'Remote' : i % 2 === 0 ? 'Lahore' : 'Islamabad',
+        description: `${t.desc} Join our team and work on exciting projects that impact millions.`,
+        requirements: t.reqs,
+        salary: { min: 40000 + (i * 5000), max: 120000 + (i * 8000), currency: 'PKR' },
+        isActive: true,
+        expiresAt: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000)
+      });
+    }
+
+    await Job.insertMany(jobList);
 
     console.log('Seeding completed successfully!');
-    process.exit();
+    console.log(`Created: 1 admin, 10 students, 10 companies, 3 FYPs, ${jobList.length} jobs`);
+    process.exit(0);
   } catch (error) {
-    console.error('Seeding error:', error);
+    console.error('Seeding failed:', error);
     process.exit(1);
   }
 };
