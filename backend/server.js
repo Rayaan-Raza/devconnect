@@ -46,9 +46,16 @@ app.use('/api', limiter);
 app.use(mongoSanitize());
 
 // Enable CORS
+const allowedOrigins = [
+  process.env.CLIENT_URL,
+  'http://localhost:5173',
+  'https://devconnect-nine-rho.vercel.app',
+  /\.vercel\.app$/
+].filter(Boolean);
+
 app.use(
   cors({
-    origin: process.env.CLIENT_URL || 'http://localhost:5173',
+    origin: allowedOrigins,
     credentials: true,
   })
 );
