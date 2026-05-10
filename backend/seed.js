@@ -25,12 +25,13 @@ const seedData = async () => {
 
     console.log('Cleared existing data...');
 
-    // 1. Create Admin
+    // 1. Create Admin (plain password — User.create runs pre-save and hashes once)
     await User.create({
       name: 'DevConnect Admin',
       email: 'admin@devconnect.com',
-      password: await bcrypt.hash('Admin123!', 12),
+      password: 'Admin123!',
       role: 'admin',
+      isActive: true,
       isVerified: true,
       isProfileComplete: true
     });
@@ -76,6 +77,7 @@ const seedData = async () => {
         email: `student${i+1}@uet.edu.pk`,
         password: await bcrypt.hash('Password123!', 12),
         role: 'student',
+        isActive: true,
         isVerified: true,
         isProfileComplete: true
       });
@@ -115,6 +117,7 @@ const seedData = async () => {
         email: `hr@${companyNames[i].toLowerCase().replace(/\s+/g, '')}.com`,
         password: await bcrypt.hash('Password123!', 12),
         role: 'company',
+        isActive: true,
         isVerified: true,
         isProfileComplete: true
       });
