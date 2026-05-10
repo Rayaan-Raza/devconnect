@@ -9,6 +9,8 @@ const Job = require('./models/Job');
 
 dotenv.config();
 
+const PUBLIC_BASE = process.env.PUBLIC_BASE_URL || 'http://localhost:5000';
+
 const seedData = async () => {
   try {
     await mongoose.connect(process.env.MONGO_URI);
@@ -158,7 +160,7 @@ const seedData = async () => {
         githubRepo: 'https://github.com/microsoft/IoT-For-Beginners',
         demoVideoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
         posterUrl: 'https://via.placeholder.com/800x600',
-        demoHtmlUrl: 'http://localhost:5000/public/demos/demo-farm.html'
+        demoHtmlUrl: `${PUBLIC_BASE}/public/demos/demo-farm.html`
       },
       {
         title: 'AI Vision Accessibility Tool',
@@ -177,7 +179,7 @@ const seedData = async () => {
         ],
         githubRepo: 'https://github.com/tensorflow/models',
         demoVideoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
-        demoHtmlUrl: 'http://localhost:5000/public/demos/demo-vision.html'
+        demoHtmlUrl: `${PUBLIC_BASE}/public/demos/demo-vision.html`
       },
       {
         title: 'Decentralized Academic Credentials',
@@ -195,7 +197,7 @@ const seedData = async () => {
           { name: students[3].name, regNumber: 'STUDENT4', email: students[3].email }
         ],
         githubRepo: 'https://github.com/ethereum/solidity',
-        demoHtmlUrl: 'http://localhost:5000/public/demos/demo-blockchain.html'
+        demoHtmlUrl: `${PUBLIC_BASE}/public/demos/demo-blockchain.html`
       }
     ];
 

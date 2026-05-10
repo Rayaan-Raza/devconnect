@@ -43,18 +43,22 @@ exports.generatePasswordResetToken = () => {
 
 // Set refresh token cookie
 exports.setRefreshCookie = (res, token, rememberMe = false) => {
+  const isProd = process.env.NODE_ENV === 'production';
   res.cookie('refreshToken', token, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'strict',
+    secure: isProd,
+    sameSite: isProd ? 'none' : 'strict',
     maxAge: rememberMe ? 7 * 24 * 60 * 60 * 1000 : 24 * 60 * 60 * 1000,
   });
 };
 
 // Clear refresh token cookie
 exports.clearRefreshCookie = (res) => {
+  const isProd = process.env.NODE_ENV === 'production';
   res.cookie('refreshToken', '', {
     httpOnly: true,
+    secure: isProd,
+    sameSite: isProd ? 'none' : 'strict',
     expires: new Date(0),
   });
 };
