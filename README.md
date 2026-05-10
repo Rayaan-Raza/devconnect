@@ -228,7 +228,8 @@ Frontend Developer, Backend Engineer, Data Scientist, DevOps Engineer, Mobile Ap
 
 ## 👥 Team
 
-- **Tabarak Cheema** — Full-Stack Developer
+- **Muhammad Tabarak Cheema** (23i-0665)
+- **Mohammad Rayaan Raza** (23i-0535)
 
 ---
 
